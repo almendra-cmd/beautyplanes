@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Beauty Plans — 01-04 Jul 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--v:#1B6B3A;--vc:#E8F5E9;--r:#C62828;--rc:#FFEBEE;--n:#E65100;--nc:#FFF3E0;--az:#1565C0;--gr:#757575;--gc:#F5F5F5;--borde:#E0E0E0;--txt:#212121}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F5F5F5;color:var(--txt);font-size:13px}
+.header{background:var(--v);color:#fff;padding:16px 28px;display:flex;justify-content:space-between;align-items:flex-start}
+.header h1{font-size:16px;font-weight:700}
+.header .sub{font-size:10px;opacity:.75;margin-top:3px}
+.header a{color:rgba(255,255,255,.7);font-size:10px;text-decoration:none}
+.header a:hover{color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 28px 0}
+.kpi{background:#fff;border-radius:8px;padding:12px 16px;border-left:4px solid var(--v);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kpi.az{border-left-color:var(--az)}.kpi.v{border-left-color:var(--v)}.kpi.n{border-left-color:var(--n)}.kpi.r{border-left-color:var(--r)}
+.kpi .num{font-size:30px;font-weight:800;line-height:1}
+.kpi .num.az{color:var(--az)}.kpi .num.v{color:var(--v)}.kpi .num.n{color:var(--n)}.kpi .num.r{color:var(--r)}
+.kpi .lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:#888;margin-top:3px;letter-spacing:.4px}
+.alerta{margin:12px 28px 0;background:var(--rc);border:1.5px solid var(--r);border-radius:8px;padding:10px 14px}
+.alerta strong{color:var(--r);font-size:11px}
+.alerta .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.alerta .tag{background:var(--r);color:#fff;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 28px 0}
+.chart-card{background:#fff;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.chart-card h3{font-size:10px;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:8px;letter-spacing:.4px}
+.chart-card canvas{max-height:160px}
+.controles{padding:12px 28px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1.5px solid var(--borde);background:#fff;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;font-weight:600;transition:all .15s}
+.btn:hover{border-color:var(--v)}
+.btn.active{background:var(--v);color:#fff;border-color:var(--v)}
+.btn.bn.active{background:var(--n);border-color:var(--n)}
+.btn.br.active{background:var(--r);border-color:var(--r)}
+.btn.bt.active{background:var(--gr);border-color:var(--gr)}
+.search{padding:4px 12px;border:1.5px solid var(--borde);border-radius:20px;font-size:11px;outline:none;width:200px}
+.search:focus{border-color:var(--v)}
+.cnt{margin-left:auto;font-size:10px;color:#999}
+.wrap{margin:10px 28px 28px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th{background:var(--v);color:#fff;padding:9px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--borde);vertical-align:top;font-size:11px;line-height:1.45}
+tr:last-child td{border-bottom:none}
+tr.data-row:hover td{background:#F1F8E9;cursor:pointer}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.bA{background:var(--vc);color:var(--v)}.bP{background:var(--nc);color:var(--n)}.bR{background:var(--rc);color:var(--r)}.bT{background:var(--gc);color:var(--gr)}
+.plan-cell{font-weight:600;color:#1a237e;font-size:11px}
+.plan-line{display:block;padding:1px 0}
+.plan-line.pmatch{color:var(--v);font-weight:800}
+.precio{font-size:11px;color:var(--v);font-weight:700;white-space:nowrap}
+.precio-ef{font-size:10px;color:#555}
+.ftag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.f01{background:#E8EAF6;color:#283593}.f03{background:#E0F2F1;color:#00695C}.f04{background:#FFF8E1;color:#F57F17}
+.urg{color:var(--r);font-weight:700;font-size:10px}
+/* detail */
+.detail-row td{background:#FAFAFA;padding:6px 10px 12px;border-bottom:1px solid var(--borde)}
+.dg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.dgr{display:grid;gap:8px}
+.dbox{background:#fff;border:1px solid var(--borde);border-radius:6px;padding:8px 10px}
+.dbox.dp{border-left:3px solid #1a237e;background:#F3F4FE}
+.dbox.dh{border-left:3px solid var(--az);background:#E3F2FD}
+.dbox.dpt{border-left:3px solid #F57F17;background:#FFFDE7}
+.dbox.da{border-left:3px solid var(--v)}
+.dbox.do{border-left:3px solid var(--r)}
+.dbox h4{font-size:9px;font-weight:700;text-transform:uppercase;color:#888;margin-bottom:5px;letter-spacing:.3px}
+.dbox p{line-height:1.55;color:#333;font-size:10px}
+.popt{font-size:10px;padding:3px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.popt:last-child{border-bottom:none}
+.popt .pnm{flex:1;font-weight:600;color:#1a237e}
+.popt .pnm.pm{color:var(--v)}
+.popt .ppr{text-align:right;white-space:nowrap;font-size:9px;color:#555}
+.popt .ppr b{color:var(--v);font-size:10px}
+
+.tab-nav{display:flex;gap:0;padding:0 28px;background:var(--v);border-bottom:3px solid rgba(255,255,255,.2)}
+.tab-btn{padding:10px 22px;color:rgba(255,255,255,.65);font-size:12px;font-weight:700;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .15s;letter-spacing:.3px;text-transform:uppercase}
+.tab-btn:hover{color:#fff}
+.tab-btn.active{color:#fff;border-bottom-color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.hist-wrap{margin:14px 28px 28px;overflow-x:auto}
+.hist-pac-header{background:var(--v);color:#fff;padding:7px 12px;border-radius:6px 6px 0 0;font-size:11px;font-weight:700;display:flex;gap:16px;align-items:center;margin-top:14px}
+.hist-pac-header .fpac{opacity:.75;font-size:10px}
+.hist-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borde);border-radius:0 0 6px 6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hist-table th{background:#37474F;color:#fff;padding:7px 10px;font-size:9px;text-transform:uppercase;letter-spacing:.4px;text-align:left;font-weight:700}
+.hist-table td{padding:7px 10px;border-bottom:1px solid var(--borde);font-size:11px;vertical-align:top}
+.hist-table tr:last-child td{border-bottom:none}
+.hist-table .tox-row td{background:#FFEBEE}
+.hist-table .tox-row td:first-child{border-left:3px solid var(--r)}
+.est-ok{background:#E8F5E9;color:#1B6B3A;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap}
+.est-prox{background:#FFF3E0;color:#E65100;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap}
+.est-ahora{background:#FFEBEE;color:#C62828;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap}
+.hist-empty{color:#aaa;font-size:11px;font-style:italic;padding:8px 12px;background:#fafafa;border:1px dashed #ddd;border-radius:0 0 6px 6px;margin-top:0}
+.tox-alert{background:#FFEBEE;border:1.5px solid var(--r);border-radius:6px;padding:8px 12px;margin-top:8px;font-size:11px;color:#C62828;font-weight:600}
+.hist-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 28px 0}
+.hkpi{background:#fff;border-radius:8px;padding:10px 14px;border-left:4px solid var(--v);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.hkpi.az{border-left-color:var(--az)}.hkpi.r{border-left-color:var(--r)}.hkpi.n{border-left-color:var(--n)}
+.hkpi .num{font-size:24px;font-weight:800;line-height:1}
+.hkpi .lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:#888;margin-top:2px;letter-spacing:.4px}
+.hist-filter{padding:10px 28px;display:flex;gap:8px;align-items:center}
+.hbtn{border:1.5px solid var(--borde);background:#fff;border-radius:20px;padding:3px 11px;font-size:11px;cursor:pointer;font-weight:600;transition:all .15s}
+.hbtn:hover,.hbtn.active{background:var(--v);color:#fff;border-color:var(--v)}
+.hbtn.ar.active{background:var(--r);border-color:var(--r)}
+@media(max-width:900px){.kpis,.charts{grid-template-columns:1fr 1fr}.kpis,.charts,.controles,.wrap{padding-left:14px;padding-right:14px}.header{padding:12px 14px}.dg2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>BEAUTY PLANS · ANÁLISIS DE AGENDA</h1>
+    <div class="sub">Semana 01–04 Julio 2026 · BeautyDerm · Controles y Arelis Moreno excluidos · <a href="https://almendra-cmd.github.io/beautyplans/" target="_blank">Ver catálogo ↗</a></div>
+  </div>
+  <div style="text-align:right;font-size:10px;opacity:.7">29/06/2026 · Click en fila para expandir detalle</div>
+</div>
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('agenda',this)">📋 Agenda semanal</button>
+  <button class="tab-btn" onclick="switchTab('historial',this)">📂 Historial por paciente</button>
+</div>
+
+<div id="tab-agenda" class="tab-content active">
+<div class="kpis">
+  <div class="kpi az"><div class="num az">24</div><div class="lbl">Pacientes válidos semana</div></div>
+  <div class="kpi v"><div class="num v">16</div><div class="lbl">Activos Beautyderm</div></div>
+  <div class="kpi n"><div class="num n">5</div><div class="lbl">Potenciales a ofrecer HOY</div></div>
+  <div class="kpi r"><div class="num r">3</div><div class="lbl">Riesgo — seña pendiente</div></div>
+</div>
+<div class="alerta">
+  <strong>⚠️ SEGUIMIENTO URGENTE — Seña paga pero plan no cerrado. Confirmar en el turno.</strong>
+  <div class="tags">
+    <span class="tag">Betty Viloria · 01/07 14:00</span>
+    <span class="tag">Peter Cremer · 01/07 16:00</span>
+    <span class="tag">Ruth Gutierrez · 01/07 16:30</span>
+  </div>
+</div>
+<div class="charts">
+  <div class="chart-card"><h3>Distribución por tipo</h3><canvas id="cTipo"></canvas></div>
+  <div class="chart-card"><h3>Pacientes por día</h3><canvas id="cDia"></canvas></div>
+  <div class="chart-card"><h3>Top tratamientos base</h3><canvas id="cPlan"></canvas></div>
+</div>
+<div class="controles">
+  <span style="font-size:11px;font-weight:600;color:#555">Filtrar:</span>
+  <button class="btn active" data-t="ALL" onclick="fil(this)">Todos (24)</button>
+  <button class="btn" data-t="A" onclick="fil(this)">✅ Activos (16)</button>
+  <button class="btn bn" data-t="P" onclick="fil(this)">⚠️ Potenciales (5)</button>
+  <button class="btn br" data-t="R" onclick="fil(this)">🔴 Riesgo (3)</button>
+  <button class="btn bt" data-t="T" onclick="fil(this)">🔵 Track dif. (1)</button>
+  <input class="search" placeholder="Buscar paciente, plan o servicio..." oninput="buscar(this.value)">
+  <span class="cnt" id="cnt">Mostrando 24 de 24</span>
+</div>
+<div class="wrap">
+<table>
+<thead>
+  <tr>
+    <th>Fecha</th><th>Hora</th><th>Paciente</th><th>Servicio actual</th>
+    <th>Estado</th><th>Planes del catálogo aplicables</th><th>Precio tarjeta</th><th>Precio efectivo</th>
+  </tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+</div><!-- /tab-agenda -->
+
+<div id="tab-historial" class="tab-content">
+<div class="hist-summary">
+  <div class="hkpi az"><div class="num" style="color:var(--az)">24</div><div class="lbl">Pacientes en agenda</div></div>
+  <div class="hkpi n"><div class="num" style="color:var(--n)">8</div><div class="lbl">Con historial registrado</div></div>
+  <div class="hkpi r"><div class="num" style="color:var(--r)" id="h-tox-cnt">0</div><div class="lbl">Con toxina a renovar / tracking</div></div>
+</div>
+<div class="hist-filter">
+  <span style="font-size:11px;font-weight:600;color:#555">Ver:</span>
+  <button class="hbtn active" onclick="hFil('all',this)">Todos</button>
+  <button class="hbtn" onclick="hFil('hist',this)">Con historial</button>
+  <button class="hbtn ar" onclick="hFil('tox',this)">Con toxina</button>
+</div>
+<div class="hist-wrap" id="hist-wrap"></div>
+</div><!-- /tab-historial -->
+
+<script>
+const D=[
+{f:"01/07",h:"11:00",n:"Carolina Grignoli",s:"Radiesse",t:"A",pl:[{n:"Radiesse + Toxina",p:"$791.100",e:"$615.300"},{n:"R10 (Radiesse) + NCTF",p:"$673.200",e:"$523.600"}],arg:"2 opciones según objetivo: (1) Radiesse + Toxina — toxina relaja musculatura que lucha contra el filler, resultado potenciado. (2) R10 + NCTF — Radiesse hace colágeno propio, NCTF revitaliza dermis con 59 activos. Preguntar qué busca la paciente para elegir.",obj:"'¿Por qué agregar algo más?' → (1) Sin toxina el filler pelea contra el músculo, dura menos. (2) Sin NCTF trabajás estructura pero no textura — son mecanismos distintos.",prof:"Dra. Rose Lima",hist:"Solo abono en sistema (06/28). Sin tratamientos previos registrados.",pre:"Explorar en consulta: objetivo volumen/estructura → Radiesse+Toxina; objetivo calidad de piel → R10+NCTF. Sin historial previo que condicione la elección."},
+
+{f:"01/07",h:"13:00",n:"Belen Herrera",s:"Toxina TS + Aumento de Labios",t:"A",pl:[{n:"★ Labios + Toxina — MATCH EXACTO",p:"$713.700",e:"$555.100",m:true},{n:"Labios + Proyección Mentón + Toxina (upsell 3 servicios)",p:"$1.072.800",e:"$834.400"}],arg:"Tiene HOY los dos servicios del plan. Cierre directo: 'El combo que indicó la dra. sale $713.700 en tarjeta, 6 cuotas de $118.950.' Si quiere sumar mentón en la misma sesión: $1.072.800.",obj:"'Es muy caro.' → Separados son $793.000. Juntos ahorran $79.300 de entrada. '6 cuotas de $118.950.'",prof:"Dra. Rose Lima",hist:"Sin historial registrado en ventas — posiblemente primera compra o nombre diferente en sistema.",pre:"Verificar nombre completo en sistema. Ya tiene los 2 servicios indicados → cierre directo en recepción al momento del pago. No necesita intervención médica."},
+
+{f:"01/07",h:"14:30",n:"Ariel Tapicer",s:"Plasma Rico Capilar",t:"P",pl:[{n:"Cool Peel + Plasma Rico (solo si facial)",p:"$540.000",e:"$420.000"},{n:"Sin plan capilar en catálogo — ofrecer paquete sesiones",p:"—",e:"—"}],arg:"PRP capilar requiere 3+ sesiones para ver resultado. Ofrecer precio bloqueado de paquete (3 sesiones) hoy. Si tiene interés en PRP facial también: Plan Cool Peel + Plasma Rico.",obj:"'Solo vine por esto.' → Con PRP capilar el resultado necesita continuidad. Cerrar el ciclo hoy protege el precio y asegura el resultado.",prof:"Dra. Rose Lima",hist:"Abono reciente en sistema (06/23). Primera sesión de PRP capilar.",pre:"Preguntar si sabe que son múltiples sesiones. Ofrecer paquete de 3 sesiones a precio cerrado. Verificar si tiene interés en combinar con PRP facial (→ Cool Peel + Plasma Rico)."},
+
+{f:"01/07",h:"15:00",n:"Silvina Casteran",s:"Consulta Nutricional",t:"T",pl:[{n:"Sin plan aplicable ahora",p:"—",e:"—"},{n:"A futuro: Limpieza Profunda + Peeling x3",p:"$222.300",e:"$172.900"}],arg:"Track diferente (nutrición). Cross-sell futuro si avanza con estética.",obj:"—",prof:"Lic. Camila De Nicola",hist:"Consulta Nutricional + Antropometría (05/20). Solo track nutricional registrado.",pre:"No ofrecer plan estético ahora. Si al salir consulta por estética: mencionar Limpieza + Peeling x3 como punto de entrada."},
+
+{f:"01/07",h:"15:30",n:"Adela Sandoval",s:"Consulta Medica Facial",t:"A",pl:[{n:"Según indicación médica — mapear post-consulta",p:"—",e:"—"}],arg:"Primera cita. Escuchar indicación de la dra. y mapear al plan exacto post-consulta.",obj:"—",prof:"Dra. Rose Lima",hist:"Sin historial en ventas.",pre:"No ofrecer plan antes de consulta. Apenas salga la médica: preguntar qué indicó y cruzar con catálogo para ofrecer el plan que corresponda."},
+
+{f:"01/07",h:"15:30",n:"Andrea Barrio",s:"HArmonyCA - 1 vial",t:"A",pl:[{n:"HArmonyCA + Labios",p:"$677.700",e:"$527.100"},{n:"HArmonyCA + Proyección Mentón",p:"$692.100",e:"$538.300"},{n:"HArmonyCA + Labios + Proyección Mentón (3 servicios)",p:"$1.036.800",e:"$806.400"}],arg:"3 planes posibles con HArmonyCA. Bioestimula piel mientras labios o mentón toman volumen. Los 3 servicios juntos dan el resultado más completo. Elegir según lo que indique la médica.",obj:"'¿Cuánto dura?' → Efecto bioestimulador de HArmonyCA hasta 18 meses. Máxima duración cuando se combina con volumen.",prof:"Dra. Rose Lima",hist:"Sin historial en ventas. Posiblemente primera sesión o seña reciente.",pre:"Determinar en consulta si tiene interés en labios, mentón o ambos — eso define cuál de los 3 planes cerrar. Los 3 son válidos según lo que indique la médica."},
+
+{f:"01/07",h:"14:00",n:"Betty Viloria",s:"CO2 Cool Peel DEKA + CO2 Resurfacing Párpados",t:"R",pl:[{n:"★ Laser CO2 Cool Peel + Profhilo — PLAN CON SEÑA",p:"$884.700",e:"$688.100",m:true},{n:"CO2 Facial + NCTF (alternativa más accesible)",p:"$604.800",e:"$470.400"},{n:"Cool Peel + Plasma Rico",p:"$540.000",e:"$420.000"},{n:"CO2 + NCTF + Toxina",p:"$973.800",e:"$757.400"},{n:"Profhilo + Toxina + CO2",p:"$1.253.700",e:"$975.100"}],arg:"PRIORIDAD: confirmar cierre del plan con seña. CO2 abre canales, Profhilo penetra más profundo — resultado superior al CO2 solo. Si no puede cerrar el plan completo, ofrecer CO2+NCTF como alternativa más accesible.",obj:"'No tengo para pagar todo.' → Tiene seña que ya abona parte. 6 cuotas de $147.450. Alternativa CO2+NCTF: 6×$100.800.",prof:"Dra. Gabriela Moreno",hist:"Limpieza Facial Profunda (04/18), Hydra Glow (05/16). SIN historial de CO2 — es su primera vez con láser.",pre:"⚠️ RIESGO: seña paga, plan no cerrado. Confirmar al inicio del turno. Historial: solo faciales básicos → paciente nueva en láser. Explicar que Cool Peel NO es agresivo (no es Resurfacing) para reducir dudas."},
+
+{f:"01/07",h:"14:00",n:"Elena Perez Villar",s:"Consulta Medica Facial",t:"A",pl:[{n:"Según indicación médica — mapear post-consulta",p:"—",e:"—"}],arg:"Primera cita Beautyderm. Mapear al plan exacto post-consulta.",obj:"—",prof:"Dra. Rose Lima",hist:"Sin historial en ventas.",pre:"No ofrecer plan antes de consulta. Post-consulta: identificar tratamiento indicado y cruzar con catálogo de los 27 planes."},
+
+{f:"01/07",h:"15:00",n:"Estefania Bureu",s:"Exosomas Capilar",t:"A",pl:[{n:"Sin plan capilar en catálogo — protocolo cerrado de sesiones",p:"—",e:"—"},{n:"A futuro si facial: Cool Peel + Plasma Rico",p:"$540.000",e:"$420.000"}],arg:"Exosomas capilares = múltiples sesiones. Protocolo mensual activo. Ofrecer precio bloqueado para ciclo completo. Si tiene interés en agregar facial: Cool Peel + PRP.",obj:"—",prof:"Dra. Gabriela Moreno",hist:"Patrón mensual Exosomas Capilar + Facial desde marzo (03/19, 04/17, 05/22). Paciente fiel con protocolo activo.",pre:"Paciente con protocolo capilar establecido. Preguntar si quiere continuar ciclo con precio bloqueado. Explorar si está interesada en agregar tratamiento facial estético en paralelo."},
+
+{f:"01/07",h:"16:00",n:"Peter Cremer",s:"Laser CO2 DEKA Lesiones - Mediano",t:"R",pl:[{n:"Confirmar cierre del plan vigente (CO2 Lesiones no en planes estándar)",p:"—",e:"—"}],arg:"PRIORIDAD: confirmar cierre del plan. CO2 Lesiones mediano es tratamiento puntual — verificar seña pendiente y cuántas sesiones restan.",obj:"—",prof:"Dra. Gabriela Moreno",hist:"Consulta Médica Facial (06/11). Sin tratamientos previos — paciente en etapa de inicio.",pre:"⚠️ RIESGO: seña paga, plan no cerrado. Confirmar al inicio del turno y registrar en sistema."},
+
+{f:"01/07",h:"16:30",n:"Dima Bassil",s:"Consulta Medica Facial (Sculptra)",t:"A",pl:[{n:"Sculptra + Toxina",p:"$1.062.000",e:"$826.000"},{n:"Profhilo + Sculptra",p:"$1.224.000",e:"$952.000"},{n:"Sculptra + Toxina + Skinvive",p:"$1.267.200",e:"$985.600"},{n:"Sculptra + Toxina + Labios",p:"$1.406.700",e:"$1.094.100"},{n:"Profhilo + Sculptra + Toxina",p:"$1.593.000",e:"$1.239.000"}],arg:"5 planes con Sculptra disponibles. El más accesible: Sculptra+Toxina ($1.062k). El más completo: Profhilo+Sculptra+Toxina ($1.593k). Decisión depende de lo que indique la médica y las áreas a tratar.",obj:"'Lo pienso.' → Lista de espera y precio no baja. 6×$177.000 en tarjeta. 'Es mucho.' → Hay 5 combinaciones — se puede arrancar por la más accesible y sumar en próxima sesión.",prof:"Dra. Gabriela Moreno",hist:"Solo abono (06/26). Sin tratamientos previos — primera vez en clínica.",pre:"Coordinar con la médica ANTES del turno: ¿cuántos viales de Sculptra? ¿Ya incluyó toxina o profhilo en la indicación? Eso define cuál de los 5 planes cerrar. Paciente nueva — sin historial."},
+
+{f:"01/07",h:"16:30",n:"Ruth Gutierrez",s:"HArmonyCA - 2 Viales",t:"R",pl:[{n:"★ HArmonyCA + Labios + Proyección Mentón (3 servicios) — más indicado",p:"$1.036.800",e:"$806.400",m:true},{n:"HArmonyCA + Labios",p:"$677.700",e:"$527.100"},{n:"HArmonyCA + Proyección Mentón",p:"$692.100",e:"$538.300"}],arg:"PRIORIDAD: confirmar cierre. Con 2 viales de HArmonyCA el plan 3 servicios es el más indicado — bioestimulación + volumen labios + estructura mentón en un solo plan.",obj:"'Quiero algo natural.' → HArmonyCA genera glow que potencia el filler de forma sutil. '6×$172.800 en tarjeta.'",prof:"Dra. Ana Mesa",hist:"Consulta Médica Facial (06/18). Sin tratamientos previos — paciente nueva.",pre:"⚠️ RIESGO: seña paga, plan no cerrado. Confirmar al inicio. 2 viales indica volumen amplio → plan 3 servicios es el natural. Verificar con Dra. Ana Mesa qué áreas indicó."},
+
+{f:"01/07",h:"18:00",n:"Candela Tevez",s:"Plasma Rico",t:"P",pl:[{n:"Cool Peel + Plasma Rico",p:"$540.000",e:"$420.000"},{n:"A futuro: Labios + Toxina (hizo labios 06/26)",p:"$713.700",e:"$555.100"}],arg:"Si el PRP es facial: Cool Peel amplifica regeneración con factores de crecimiento propios. Para próxima sesión: acaba de hacer labios → natural sumar toxina (ya tiene el tratamiento más caro del plan).",obj:"'¿Duele?' → Cool Peel: 2-3 días rojez leve. PRP encima acelera recuperación. '¿Para qué el láser?' → Abre canales — PRP penetra más profundo.",prof:"Dra. Ana Mesa",hist:"Aumento de Labios (06/26) — hizo labios hace 5 días. Abono previo (06/11).",pre:"Acaba de hacer labios el 26/06. Viene por PRP. Oferta inmediata: Cool Peel+PRP. Dejar nota para próxima sesión: ya tiene Labios → agregar Toxina cierra el plan Labios+Toxina con descuento."},
+
+{f:"03/07",h:"10:30",n:"Ximena Predazzi",s:"Sculptra 1 vial + control bótox",t:"P",pl:[{n:"Profhilo + Sculptra — cross-sell genuino (Profhilo no lo tiene)",p:"$1.224.000",e:"$952.000",m:true},{n:"Combo Bótox x3 — plan anual, bloquea precio de toxina que ya hace",p:"$984.000",e:"$861.000"},{n:"Planes con Toxina NO aplican ahora — hizo Toxina TI el 19/06",p:"—",e:"—"}],arg:"ATENCIÓN: hizo Toxina el 19/06 — el control de hoy es de esa sesión. NO ofrecer toxina como cross-sell. El único plan Sculptra sin toxina es Profhilo+Sculptra ($1.224k). Para bloquear precio de próximas toxinas: Combo Bótox x3 ($984k tarjeta -20%).",obj:"Dice que ya hizo la toxina → Correcto, por eso el plan es Profhilo+Sculptra: Profhilo es lo nuevo. Para proximas toxinas: el Combo x3 bloquea el precio hoy. Son dos decisiones separadas: Sculptra ahora, ciclo de toxina bloqueado.",prof:"Dra. Rose Lima",hist:"Consulta Médica Facial (06/17), Toxina Botulínica Tercio Inferior (06/19). Viene el 03/07 por CONTROL de esa toxina + Sculptra 1 vial.",pre:"NO ofrecer planes con toxina — la hizo hace 2 semanas. Solo 2 opciones válidas: (1) Profhilo+Sculptra como cross-sell genuino, (2) Combo Bótox x3 para bloquear precio futuro de su ciclo regular. Coordinar con Dra. Rose Lima qué indicó para el Sculptra."},{f:"03/07",h:"14:00",n:"Rocio Gomez Jara",s:"Aumento de Labios",t:"A",pl:[{n:"Labios + Toxina",p:"$713.700",e:"$555.100"},{n:"Labios + Proyección Mentón",p:"$703.800",e:"$547.400"},{n:"HArmonyCA + Labios",p:"$677.700",e:"$527.100"},{n:"Labios + Proyección Mentón + Toxina (3 servicios)",p:"$1.072.800",e:"$834.400"},{n:"Labios + Proyección Mentón + Ojeras (3 servicios)",p:"$1.082.700",e:"$842.100"},{n:"HArmonyCA + Labios + Proyección Mentón (3 servicios)",p:"$1.036.800",e:"$806.400"}],arg:"6 planes con labios. Los más naturales para primera vez: Labios+Toxina (armoniza tercio inferior) o Labios+Mentón (equilibra perfil). Si quiere más volumen facial general: HArmonyCA+Labios+Mentón es el plan premium.",obj:"'Solo quería los labios.' → Labios solos sin toxina pueden verse pesados. El combo da balance. '¿Cuánto dura?' → Con toxina el resultado se sostiene 6-8 meses.",prof:"Dra. Rose Lima",hist:"Solo abono (06/22). Sin tratamientos previos — primera vez.",pre:"Primera vez en labios. Explorar: ¿quiere solo labios o también le preocupa el mentón o arrugas? Eso define cuál de los 6 planes cerrar."},
+
+{f:"03/07",h:"15:00",n:"Cecilia Noemi Sincovich",s:"Aumento de Labios",t:"A",pl:[{n:"Labios + Toxina",p:"$713.700",e:"$555.100"},{n:"Labios + Proyección Mentón",p:"$703.800",e:"$547.400"},{n:"HArmonyCA + Labios",p:"$677.700",e:"$527.100"},{n:"Labios + Proyección Mentón + Toxina (3 servicios)",p:"$1.072.800",e:"$834.400"},{n:"HArmonyCA + Labios + Proyección Mentón (3 servicios)",p:"$1.036.800",e:"$806.400"}],arg:"Paciente activa que ya hace CO2 y Profhilo. Viene por labios — nueva área. Ya conoce el sistema de planes. Verificar $268.100 anotados: ¿seña para labios o pago completo?",obj:"'Ya gasto mucho.' → CO2 y Profhilo los sigue haciendo. Este plan es para el área nueva (labios). '¿Por qué toxina?' → Elimina líneas que enmarcan los labios — se ven más definidos.",prof:"Dra. Rose Lima",hist:"CO2 Cool Peel (04/01), Profhilo (05/07 y 05/22), Hydra Glow (06/05), Laser Resurfacing (06/19). Paciente muy activa en CO2 + Profhilo. Ahora expande a labios.",pre:"Paciente MUY activa y de alta inversión. Verificar el $268.100 de la agenda: ¿seña de labios o pago de algo más? Alta disposición a invertir — puede cerrar un plan 3 servicios."},
+
+{f:"03/07",h:"15:00",n:"Ines Dorina Piris",s:"Relleno Ojeras",t:"A",pl:[{n:"Relleno Ojeras + Toxina",p:"$747.900",e:"$581.700"},{n:"Ojeras + Bótox + Peeling x4",p:"$956.700",e:"$744.100"},{n:"Labios + Proyección Mentón + Ojeras (3 servicios)",p:"$1.082.700",e:"$842.100"}],arg:"3 planes con ojeras. Más natural para primera vez: Ojeras+Toxina (rejuvenecimiento periocular total). Peeling x4 asegura 4 visitas de mantenimiento. El 3 servicios suma labios+mentón si tiene interés en más áreas.",obj:"'No sé si quiero hacer tanto.' → Ojeras+Toxina es el más simple con el mejor ratio resultado/precio. '¿La toxina va en las ojeras?' → Va en tercio superior — arrugas que rodean el área. Efecto periocular total.",prof:"Dra. Gabriela Moreno",hist:"Solo abono (06/23). Sin tratamientos previos — primera vez.",pre:"Primera vez con relleno ojeras. Explorar: ¿tiene arrugas en el área o solo bolsas/ojeras? ¿Le interesa también labios o mentón? Eso define entre los 3 planes disponibles."},
+
+{f:"03/07",h:"16:00",n:"Soledad Oviedo",s:"Consulta Medica Facial (CO2 párpados)",t:"A",pl:[{n:"CO2 Facial + NCTF",p:"$604.800",e:"$470.400"},{n:"Cool Peel + Plasma Rico",p:"$540.000",e:"$420.000"},{n:"Laser CO2 Cool Peel + Profhilo",p:"$884.700",e:"$688.100"},{n:"CO2 + NCTF + Toxina",p:"$973.800",e:"$757.400"},{n:"Profhilo + Toxina + CO2",p:"$1.253.700",e:"$975.100"}],arg:"5 planes con CO2 disponibles. Más accesible: Cool Peel+PRP ($540k) o CO2+NCTF ($604.800). Más completo: Profhilo+Toxina+CO2 ($1.253k). La decisión depende de indicación médica y presupuesto.",obj:"'¿Días de recuperación?' → Cool Peel: 2-3 días. Con Profhilo/NCTF recuperación más suave. 'Es mucho.' → Hay opciones desde $540k — no necesitan hacer todo junto.",prof:"Dra. Gabriela Moreno",hist:"Sin historial en ventas.",pre:"Sin historial previo. Viene consultando CO2 párpados → esperar indicación médica. Tener los 5 planes CO2 disponibles post-consulta para ofrecer según presupuesto y lo que indicó la dra."},
+
+{f:"04/07",h:"10:30",n:"Daniela Figueroa Montanares",s:"Toxina Botulínica TS",t:"A",pl:[{n:"Toxina + Skin Booster",p:"$668.700",e:"$520.100"},{n:"Combo Bótox x3 ★ (tarjeta -20% exclusivo)",p:"$984.000",e:"$861.000"},{n:"Profhilo + Toxina",p:"$900.000",e:"$700.000"},{n:"Labios + Toxina",p:"$713.700",e:"$555.100"},{n:"Proyección Mentón + Toxina",p:"$728.100",e:"$566.300"},{n:"Relleno Ojeras + Toxina",p:"$747.900",e:"$581.700"}],arg:"6 planes posibles con toxina. Si repite bótox regularmente: Combo x3 ★ asegura precio ante inflación (tarjeta -20% exclusivo). Si quiere agregar revitalización: Profhilo+Toxina. Si tiene interés en labios, mentón u ojeras: hay 3 planes adicionales.",obj:"'¿Por qué pagar 3 ahora?' → En 6 meses este precio no va a existir. '¿Y si no puedo venir?' → El plan queda en sistema, puede usarlo cuando pueda.",prof:"Dra. Gabriela Moreno",hist:"Sin historial en ventas.",pre:"Sin historial. Viene solo por Toxina TS. Preguntar: '¿Venís seguido con la toxina?' → Sí: Combo Bótox x3. '¿Tenés algo más indicado?' → Identificar cuál de los 6 planes cerrar."},
+
+{f:"04/07",h:"11:00",n:"Luciana Cuello Serra",s:"Laser CO2 Cool Peel DEKA - Facial + Párpados",t:"A",pl:[{n:"CO2 Facial + NCTF",p:"$604.800",e:"$470.400"},{n:"Cool Peel + Plasma Rico",p:"$540.000",e:"$420.000"},{n:"Laser CO2 Cool Peel + Profhilo",p:"$884.700",e:"$688.100"},{n:"CO2 + NCTF + Toxina",p:"$973.800",e:"$757.400"},{n:"Profhilo + Toxina + CO2",p:"$1.253.700",e:"$975.100"}],arg:"Ya tiene CO2 Cool Peel indicado — 5 planes aplicables. Más accesible: Cool Peel+PRP ($540k) o CO2+NCTF ($604.800). CO2 mejora absorción de lo que se aplique después — NCTF, Profhilo o PRP penetran más profundo.",obj:"'¿Se puede hacer todo junto?' → Sí, y es la forma óptima. '¿Días de recuperación?' → 2-3 días rojez leve — fin de semana se hace, lunes de vuelta.",prof:"Dra. Gabriela Moreno",hist:"Sin historial en ventas.",pre:"Sin historial. Viene para CO2 Cool Peel. ¿Es primera vez o tiene plan activo? ¿La médica indicó algo adicional (NCTF, Profhilo, PRP, toxina)? Eso define cuál de los 5 planes cerrar."},
+
+{f:"04/07",h:"12:00",n:"Florencia Salazzari",s:"Laser CO2 DEKA Lesiones (3ra sesión)",t:"A",pl:[{n:"Cool Peel + Plasma Rico (mantenimiento próximo ciclo)",p:"$540.000",e:"$420.000"},{n:"CO2 Facial + NCTF (mantenimiento próximo ciclo)",p:"$604.800",e:"$470.400"}],arg:"3ra sesión de CO2 Lesiones. Antes de que termine el ciclo: ofrecer el próximo plan de mantenimiento. PRP con CO2 acelera regeneración; NCTF nutre la dermis para sostener el resultado en el tiempo.",obj:"'Ya gasté mucho.' → Mantenimiento con PRP o NCTF hace que el resultado actual dure 2x más. Es la inversión que protege lo que ya invirtió.",prof:"Dra. Gabriela Moreno",hist:"Laser CO2 DEKA Lesiones (03/28, 05/16). Protocolo activo desde marzo. Abono en mayo.",pre:"Paciente con protocolo CO2 Lesiones activo. 3ra sesión → momento ideal para ofrecer siguiente plan. Preguntar a la médica si recomienda NCTF o PRP como mantenimiento post-protocolo."},
+
+{f:"04/07",h:"13:00",n:"Mariana Torres Guevara",s:"Consulta Medica Facial (CO2 Cool Peel)",t:"A",pl:[{n:"CO2 Facial + NCTF",p:"$604.800",e:"$470.400"},{n:"Cool Peel + Plasma Rico",p:"$540.000",e:"$420.000"},{n:"Laser CO2 Cool Peel + Profhilo",p:"$884.700",e:"$688.100"},{n:"CO2 + NCTF + Toxina",p:"$973.800",e:"$757.400"},{n:"Profhilo + Toxina + CO2",p:"$1.253.700",e:"$975.100"}],arg:"Primera cita consultando CO2 Cool Peel. Momento ideal para cerrar el plan con la médica presente — sale con tratamiento y precio definido. 5 opciones según presupuesto.",obj:"'¿Días de recuperación?' → Cool Peel: 2-3 días. Viernes se hace, lunes vuelve. 'No sé cuál elegir.' → Empezar por CO2+NCTF ($604.800): el más equilibrado.",prof:"Dra. Rose Lima",hist:"Sin historial en ventas.",pre:"Primera cita. 5 planes CO2 disponibles. Coordinar con Dra. Rose Lima post-consulta qué indicó. Ideal cerrar ese mismo día — paciente recién convencida."},
+
+{f:"04/07",h:"13:30",n:"Mariela Oliva",s:"Aumento de Labios + Toxina Botulínica TS",t:"P",pl:[{n:"★ Labios + Toxina — MATCH EXACTO",p:"$713.700",e:"$555.100",m:true},{n:"Labios + Proyección Mentón + Toxina (upsell 3 servicios)",p:"$1.072.800",e:"$834.400"}],arg:"Tiene HOY los dos servicios del plan. Oferta directa en recepción: 'Esos dos juntos en plan salen $713.700 en tarjeta.' Si quiere sumar mentón para equilibrar el perfil: $1.072.800 con los 3 servicios.",obj:"'Ya lo tengo sin plan.' → Separados son $793.000. En plan: $713.700 tarjeta o $555.100 efectivo. Ahorra $79.300. 'Lo pienso.' → Sale hoy con los 2 tratamientos hechos — el descuento aplica ahora o nunca.",prof:"Dra. Gabriela Moreno",hist:"Sin historial en ventas.",pre:"Sin historial. Match exacto → cierre directo en recepción. No necesita médica para ofrecer. Mencionar upsell mentón solo si la paciente muestra interés."},
+
+{f:"04/07",h:"14:00",n:"Agostina Pisano",s:"NCTF 135 HA - Facial",t:"P",pl:[{n:"CO2 Facial + NCTF",p:"$604.800",e:"$470.400"},{n:"R10 (Radiesse) + NCTF",p:"$673.200",e:"$523.600"},{n:"CO2 + NCTF + Toxina (ya hizo toxina en may)",p:"$973.800",e:"$757.400"}],arg:"3 planes con NCTF. Historial: hizo Labios+Toxina en mayo — ya conoce toxina y es cómoda con procedimientos. CO2+NCTF es el combo más popular. CO2+NCTF+Toxina tiene sentido por su historial. R10+NCTF: estructura + revitalización.",obj:"'Solo quiero el NCTF.' → Con CO2 la superficie también se renueva — resultado 2x al mismo tiempo. '¿Tanto de una?' → CO2+NCTF está diseñado para hacerse junto — 1 sesión, doble resultado.",prof:"Dra. Rose Lima",hist:"Aumento de Labios (05/02) + Toxina TS (05/02) — hizo ambos juntos en mayo. Abonos en marzo y mayo. Paciente conocida.",pre:"Paciente con historial: ya hizo Labios+Toxina en mayo → cómoda con toxina y procedimientos combinados. Los 3 planes aplican. CO2+NCTF+Toxina ($973.800) es la evolución natural de su historial."}
+];
+
+const FC={"01/07":"f01","03/07":"f03","04/07":"f04"};
+let filtro="ALL", sq="";
+
+
+// ── HISTORIAL DATA ────────────────────────────────────────────────────────
+// estado toxina: null=sin registro | 'reciente'(<60d) | 'prox'(60-104d) | 'ahora'(>=105d)
+const H=[
+  {n:"Carolina Grignoli",f:"01/07",hist:[],toxina:null},
+  {n:"Belen Herrera",f:"01/07",hist:[],toxina:null},
+  {n:"Ariel Tapicer",f:"01/07",hist:[],toxina:null},
+  {n:"Silvina Casteran",f:"01/07",hist:[
+    {fecha:"20/05/2026",srv:"Consulta Nutricional + Antropometría",prof:"Lic. Camila De Nicola",precio:"$48.000",esTox:false}
+  ],toxina:null},
+  {n:"Adela Sandoval",f:"01/07",hist:[],toxina:null},
+  {n:"Andrea Barrio",f:"01/07",hist:[],toxina:null},
+  {n:"Betty Viloria",f:"01/07",hist:[
+    {fecha:"18/04/2026",srv:"Limpieza Facial Profunda",prof:"Ctra. Arelis Moreno",precio:"$30.200",esTox:false},
+    {fecha:"18/04/2026",srv:"Acneplur Hydra Sulderm Crema Hidratante",prof:"—",precio:"$25.600",esTox:false},
+    {fecha:"16/05/2026",srv:"Hydra Glow",prof:"Ctra. Arelis Moreno",precio:"$30.400",esTox:false}
+  ],toxina:null},
+  {n:"Elena Perez Villar",f:"01/07",hist:[],toxina:null},
+  {n:"Estefania Bureu",f:"01/07",hist:[
+    {fecha:"19/03/2026",srv:"Exosomas Facial + Exosomas Capilar",prof:"Dra. Gabriela Moreno",precio:"$577.000",esTox:false},
+    {fecha:"17/04/2026",srv:"Exosomas Facial + Exosomas Capilar",prof:"Dra. Gabriela Moreno",precio:"$731.000",esTox:false},
+    {fecha:"22/05/2026",srv:"Exosomas Capilar + Exosomas Facial",prof:"Dra. Gabriela Moreno",precio:"$472.000",esTox:false}
+  ],toxina:null},
+  {n:"Peter Cremer",f:"01/07",hist:[
+    {fecha:"11/06/2026",srv:"Consulta Médica Facial",prof:"Dra. Gabriela Moreno",precio:"—",esTox:false}
+  ],toxina:null},
+  {n:"Dima Bassil",f:"01/07",hist:[],toxina:null},
+  {n:"Ruth Gutierrez",f:"01/07",hist:[
+    {fecha:"18/06/2026",srv:"Consulta Médica Facial",prof:"Dra. Ana Mesa",precio:"—",esTox:false}
+  ],toxina:null},
+  {n:"Candela Tevez",f:"01/07",hist:[
+    {fecha:"26/06/2026",srv:"Aumento de Labios",prof:"Dra. Rose Lima",precio:"$333.000",esTox:false}
+  ],toxina:null},
+  {n:"Ximena Predazzi",f:"03/07",hist:[
+    {fecha:"17/06/2026",srv:"Consulta Médica Facial",prof:"Dra. Rose Lima",precio:"$50.000",esTox:false},
+    {fecha:"19/06/2026",srv:"Toxina Botulínica - Tercio Inferior",prof:"Dra. Rose Lima",precio:"$287.000",esTox:true,
+     diasDesde:12,prox:"19/10/2026",estTox:"reciente",planSug:"Combo Bótox x3 ★ cuando renueve (~octubre) — precio $984.000 tarjeta"}
+  ],toxina:{fecha:"19/06/2026",zona:"Tercio Inferior",diasDesde:12,prox:"19/10/2026",estTox:"reciente",
+    planSug:"Combo Bótox x3 ★ — bloquear precio para ciclo anual (siguiente sesión ~octubre)"}},
+  {n:"Rocio Gomez Jara",f:"03/07",hist:[],toxina:null},
+  {n:"Cecilia Sincovich",f:"03/07",hist:[
+    {fecha:"14/03/2026",srv:"Laser CO2 Cool Peel DEKA - Facial + Párpados + Lifting Pómulos (control)",prof:"Dra. Rose Lima",precio:"$143.000",esTox:false},
+    {fecha:"01/04/2026",srv:"Laser CO2 Cool Peel DEKA - Facial (efectivo -20%) + CO2 Cool Peel Control",prof:"Dra. Rose Lima",precio:"$250.000",esTox:false},
+    {fecha:"07/05/2026",srv:"Laser CO2 Cool Peel DEKA - Escote + Profhilo",prof:"Dra. Rose Lima",precio:"$603.000",esTox:false},
+    {fecha:"22/05/2026",srv:"Profhilo",prof:"Dra. Rose Lima",precio:"— (uso abono)",esTox:false},
+    {fecha:"05/06/2026",srv:"Hydra Glow",prof:"Ctra. Arelis Moreno",precio:"$46.400",esTox:false},
+    {fecha:"19/06/2026",srv:"Laser Resurfacing Facial + Cuello + Escote + Párpados",prof:"Dra. Rose Lima",precio:"$688.000",esTox:false}
+  ],toxina:null},
+  {n:"Ines Dorina Piris",f:"03/07",hist:[],toxina:null},
+  {n:"Soledad Oviedo",f:"03/07",hist:[],toxina:null},
+  {n:"Daniela Figueroa Montanares",f:"04/07",hist:[],toxina:null},
+  {n:"Luciana Cuello Serra",f:"04/07",hist:[],toxina:null},
+  {n:"Florencia Salazzari",f:"04/07",hist:[
+    {fecha:"28/03/2026",srv:"Laser CO2 DEKA Lesiones - Mediano",prof:"Dra. Gabriela Moreno",precio:"$415.000",esTox:false},
+    {fecha:"16/05/2026",srv:"Laser CO2 DEKA Lesiones - Mediano",prof:"Dra. Gabriela Moreno",precio:"$375.000",esTox:false}
+  ],toxina:null},
+  {n:"Mariana Torres Guevara",f:"04/07",hist:[],toxina:null},
+  {n:"Mariela Oliva",f:"04/07",hist:[],toxina:null},
+  {n:"Agostina Pisano",f:"04/07",hist:[
+    {fecha:"02/05/2026",srv:"Aumento de Labios (tarjeta, 6 cuotas s/i) + Toxina Botulínica - Tercio Superior",prof:"Dra. Rose Lima",precio:"$565.000",esTox:true,
+     diasDesde:60,prox:"02/09/2026",estTox:"prox",planSug:"Combo Bótox x3 ★ o Labios+Toxina cuando renueve (~septiembre)"}
+  ],toxina:{fecha:"02/05/2026",zona:"Tercio Superior",diasDesde:60,prox:"02/09/2026",estTox:"prox",
+    planSug:"Combo Bótox x3 ★ ($984.000 tarjeta) o Labios+Toxina ($713.700) — renovación estimada septiembre"}}
+];
+
+let hFiltro="all";
+function hFil(f,btn){
+  hFiltro=f;
+  document.querySelectorAll(".hbtn").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  renderHistorial();
+}
+
+function renderHistorial(){
+  const wrap=document.getElementById("hist-wrap");
+  if(!wrap)return;
+  const tbl=H.filter(p=>{
+    if(hFiltro==="hist")return p.hist.length>0;
+    if(hFiltro==="tox")return p.toxina!==null;
+    return true;
+  });
+  let html="";
+  tbl.forEach(p=>{
+    const fColor=p.f==="01/07"?"#1B6B3A":(p.f==="03/07"?"#00695C":"#F57F17");
+    html+=`<div class="hist-pac">`;
+    html+=`<div class="hist-pac-header" style="background:${fColor}">
+      <span>${p.n}</span>
+      <span class="fpac">Cita: ${p.f}</span>
+      ${p.toxina?`<span style="margin-left:auto;background:rgba(0,0,0,.2);padding:2px 8px;border-radius:4px;font-size:10px">💉 Toxina: ${p.toxina.fecha} — ${p.toxina.zona}</span>`:""}
+    </div>`;
+    if(p.hist.length===0){
+      html+=`<div class="hist-empty">Sin historial registrado en Ventas 2026 — verificar en sistema de turnos</div>`;
+    } else {
+      html+=`<table class="hist-table"><thead><tr>
+        <th>Fecha</th><th>Servicio</th><th>Profesional</th><th>Monto</th><th>Estado toxina</th><th>Acción sugerida</th>
+      </tr></thead><tbody>`;
+      p.hist.forEach(s=>{
+        const rc=s.esTox?"tox-row":"";
+        let est="", acc="";
+        if(s.esTox){
+          if(s.estTox==="reciente"){est=`<span class="est-ok">✅ Reciente (${s.diasDesde}d)</span>`;acc=s.planSug;}
+          else if(s.estTox==="prox"){est=`<span class="est-prox">🔶 Pronto (${s.diasDesde}d)</span>`;acc=s.planSug;}
+          else if(s.estTox==="ahora"){est=`<span class="est-ahora">⚠️ RENOVAR (${s.diasDesde}d)</span>`;acc=s.planSug;}
+        } else {est="—";acc="—";}
+        html+=`<tr class="${rc}"><td>${s.fecha}</td><td>${s.srv}</td><td>${s.prof}</td><td>${s.precio}</td><td>${est}</td><td style="font-size:10px;color:#333">${acc}</td></tr>`;
+      });
+      html+=`</tbody></table>`;
+    }
+    if(p.toxina){
+      const bg=p.toxina.estTox==="ahora"?"#FFEBEE":(p.toxina.estTox==="prox"?"#FFF3E0":"#E8F5E9");
+      const fc=p.toxina.estTox==="ahora"?"#C62828":(p.toxina.estTox==="prox"?"#E65100":"#1B6B3A");
+      const ico=p.toxina.estTox==="ahora"?"⚠️":(p.toxina.estTox==="prox"?"🔶":"✅");
+      html+=`<div class="tox-alert" style="background:${bg};border-color:${fc};color:${fc}">
+        ${ico} <b>TOXINA</b> — última: ${p.toxina.fecha} (${p.toxina.zona}) · ${p.toxina.diasDesde} días · Próx. estimada: <b>${p.toxina.prox}</b><br>
+        <span style="font-size:10px;font-weight:400">Plan sugerido: ${p.toxina.planSug}</span>
+      </div>`;
+    }
+    html+=`</div>`;
+  });
+  if(html==="")html=`<div style="padding:20px;color:#999;font-style:italic">Sin pacientes para el filtro seleccionado.</div>`;
+  wrap.innerHTML=html;
+  // update counter
+  const toxC=H.filter(p=>p.toxina).length;
+  const el=document.getElementById("h-tox-cnt");
+  if(el)el.textContent=toxC;
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll(".tab-content").forEach(d=>d.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  if(btn)btn.classList.add("active");
+  if(tab==="historial")renderHistorial();
+}
+
+function renderTabla(){
+  const tb=document.getElementById("tbody"); tb.innerHTML="";
+  let vis=0;
+  D.forEach((r,idx)=>{
+    const planStr=r.pl.map(p=>p.n).join(" ").toLowerCase();
+    if(filtro!=="ALL"&&r.t!==filtro) return;
+    if(sq&&!r.n.toLowerCase().includes(sq)&&!planStr.includes(sq)&&!r.s.toLowerCase().includes(sq)) return;
+    vis++;
+    const prices=r.pl.filter(p=>p.p&&p.p!=="—");
+    const minT=prices.length?prices[0].p:"—";
+    const minE=prices.length?prices[0].e:"—";
+    const hasMatch=r.pl.some(p=>p.m);
+    const isUrg=r.t==="R";
+
+    const planHTML=r.pl.map(p=>`<span class="plan-line${p.m?' pmatch':''}">${p.m?'★ ':p.n.startsWith("Sin ")||p.n.startsWith("A futuro")||p.n.startsWith("Según")||p.n.startsWith("Confirmar")?'':'• '}${p.n}</span>`).join("");
+
+    const tr=document.createElement("tr");
+    tr.className="data-row";
+    tr.onclick=()=>toggleDetail(idx);
+    tr.innerHTML=`
+      <td><span class="ftag ${FC[r.f]||''}">${r.f}</span></td>
+      <td style="white-space:nowrap"><strong>${r.h}</strong></td>
+      <td><strong>${r.n}</strong><br><span style="font-size:10px;color:#888">${r.prof}</span></td>
+      <td style="font-size:10px;max-width:130px;color:#444">${r.s}</td>
+      <td><span class="badge b${r.t}">${r.t==="A"?"✅ Activo":r.t==="P"?"⚠️ Potencial":r.t==="R"?"🔴 Riesgo":"🔵 Track dif."}</span></td>
+      <td class="plan-cell">${planHTML}${isUrg?'<br><span class="urg">⚠️ SEÑA PENDIENTE</span>':''}</td>
+      <td class="precio">${minT}${prices.length>1?'<br><span style="font-size:9px;font-weight:400;color:#999">(desde · '+prices.length+' opciones)</span>':''}</td>
+      <td class="precio-ef">${minE}</td>`;
+    tb.appendChild(tr);
+
+    const allPlans=r.pl.map(p=>`<div class="popt"><span class="pnm${p.m?' pm':''}">${p.m?'★ ':''} ${p.n}</span><span class="ppr">${p.p!=="—"?`<b>${p.p}</b> tarjeta / ${p.e} ef.`:'—'}</span></div>`).join("");
+
+    const det=document.createElement("tr");
+    det.className="detail-row";
+    det.id="det-"+idx;
+    det.style.display="none";
+    det.innerHTML=`<td colspan="8">
+      <div class="dg2">
+        <div class="dbox dp"><h4>📋 Todos los planes del catálogo que aplican</h4>${allPlans}</div>
+        <div class="dgr">
+          <div class="dbox dh"><h4>📂 Historial en ventas</h4><p>${r.hist}</p></div>
+          <div class="dbox dpt"><h4>⚡ Acción pre-turno</h4><p>${r.pre}</p></div>
+        </div>
+      </div>
+      <div class="dg2" style="margin-top:0">
+        <div class="dbox da"><h4>💬 Argumento de venta</h4><p>${r.arg}</p></div>
+        <div class="dbox do"><h4>🛡️ Manejo de objeción</h4><p>${r.obj}</p></div>
+      </div>
+    </td>`;
+    tb.appendChild(det);
+  });
+  document.getElementById("cnt").textContent=`Mostrando ${vis} de 24`;
+}
+
+function toggleDetail(idx){
+  const det=document.getElementById("det-"+idx);
+  if(!det) return;
+  det.style.display=det.style.display==="none"?"table-row":"none";
+}
+function fil(btn){
+  document.querySelectorAll(".btn[data-t]").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  filtro=btn.dataset.t;
+  renderTabla();
+}
+function buscar(v){sq=v.toLowerCase().trim();renderTabla();}
+
+window.onload=function(){
+  renderTabla();
+  new Chart(document.getElementById("cTipo").getContext("2d"),{type:"doughnut",data:{labels:["Activos","Potenciales","Riesgo","Track dif."],datasets:[{data:[16,5,3,1],backgroundColor:["#1B6B3A","#E65100","#C62828","#757575"]}]},options:{plugins:{legend:{position:"bottom",labels:{font:{size:10}}}}}});
+  new Chart(document.getElementById("cDia").getContext("2d"),{type:"bar",data:{labels:["01/07","03/07","04/07"],datasets:[{label:"Activos",data:[11,4,4],backgroundColor:"#1B6B3A"},{label:"Potenciales",data:[2,1,2],backgroundColor:"#E65100"},{label:"Riesgo",data:[3,0,0],backgroundColor:"#C62828"},{label:"Track",data:[1,0,0],backgroundColor:"#9E9E9E"}]},options:{scales:{x:{stacked:true},y:{stacked:true,ticks:{font:{size:9}}}},plugins:{legend:{labels:{font:{size:9}}}}}});
+  new Chart(document.getElementById("cPlan").getContext("2d"),{type:"bar",data:{labels:["CO2/Laser","Labios","Sculptra","Toxina","HArmonyCA","NCTF/Radiesse","Ojeras","PRP","Otros"],datasets:[{data:[7,5,4,4,3,3,2,2,3],backgroundColor:"#1565C0",borderRadius:3}]},options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9}}}}}});
+};
+</script>
+</body>
+</html>
